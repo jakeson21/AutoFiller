@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QAction>
 #include <QFileDialog>
+#include <QListWidgetItem>
 
 #include <map>
 #include <vector>
@@ -45,6 +46,7 @@ public slots:
     void handleMenuOpen(bool inIsChecked);
     void handleMenuClose(bool inIsChecked);
     void handleCellClicked(int inRow, int inCol);
+    void handleListItemDoubleClicked(QListWidgetItem* inItem);
 
 protected:
     bool switchToLastActiveWindow();

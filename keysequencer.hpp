@@ -122,9 +122,10 @@ public:
               {
                   mToken = static_cast<TokenType_E>(it->first);
                   break;
-              }
-              throw std::invalid_argument("Unrecognized Enum");
+              }              
         }
+        if (mToken == TokenType_E::UNASSIGNED)
+            throw std::invalid_argument("Unrecognized Enum");
     }
 
     void initialize()

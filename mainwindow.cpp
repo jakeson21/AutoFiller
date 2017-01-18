@@ -85,8 +85,9 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
                 // Fill data item list
                 std::stringstream ss;
                 ss << "[" << column << "] " << headers[column];
-                ui->listWidget->addItem(QString::fromStdString(ss.str()));
+                ui->listWidget->addItem(QString::fromStdString(ss.str()));                                
             }
+            connect(ui->listWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::handleListItemDoubleClicked);
 
             for(int row=0; row<data.size(); row++)
             {
@@ -101,6 +102,12 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
     }
 }
 
+void MainWindow::handleListItemDoubleClicked(QListWidgetItem* inItem)
+{
+    int index = ui->listWidget->row(inItem);
+    std::cout << "Selected index " << index << std::endl;
+    ui->lineEditKeySequence->insert(QString("[%1]").arg(index));
+}
 
 void MainWindow::handleMenuClose(bool /*inIsChecked*/)
 {

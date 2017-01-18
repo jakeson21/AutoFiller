@@ -31,7 +31,11 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListWidget" name="listWidget"/>
+        <widget class="QListWidget" name="listWidget">
+         <property name="editTriggers">
+          <set>QAbstractItemView::DoubleClicked</set>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="buttonSendInfo">
@@ -83,9 +87,6 @@
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
          </property>
          <property name="rowCount">
           <number>2</number>
