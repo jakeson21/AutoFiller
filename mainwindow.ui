@@ -89,20 +89,14 @@
           <enum>QAbstractItemView::SelectRows</enum>
          </property>
          <property name="rowCount">
-          <number>2</number>
+          <number>0</number>
          </property>
          <property name="columnCount">
-          <number>4</number>
+          <number>0</number>
          </property>
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
-         <row/>
-         <row/>
-         <column/>
-         <column/>
-         <column/>
-         <column/>
         </widget>
        </item>
       </layout>

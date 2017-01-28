@@ -32,3 +32,5 @@ HEADERS += mainwindow.h \
     keysequencer.hpp
 
 FORMS   += mainwindow.ui
+
+RC_ICONS = myappico.ico
