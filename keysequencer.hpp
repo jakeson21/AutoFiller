@@ -6,19 +6,18 @@
 #include <map>
 #include <iostream>
 
-//#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #define WINVER 0x0500
 #include "Windows.h"
 #include "WinUser.h"
-//#endif
+#endif
 
-
+// Common interface for classes StringKeys and TokenKeys
 class KeyCommandInterface
 {
 public:
     virtual void SendKeys() = 0;
 };
-
 
 class StringKeys : public KeyCommandInterface
 {
@@ -82,26 +81,23 @@ public:
 
 protected:
     std::wstring mStr;
-
 };
-
 
 class TokenKeys : public KeyCommandInterface
 {
 public:
     enum TokenType_E {
-        UNASSIGNED = -1,
-        BACK = VK_BACK,
-        TAB = VK_TAB,
-        SPACE = VK_SPACE,
-        LEFT = VK_LEFT,
-        UP = VK_UP,
-        RIGHT = VK_RIGHT,
-        DOWN = VK_DOWN,
-        RETURN = VK_RETURN,
-        ALTTAB = 0x100,
+        UNASSIGNED  = -1,
+        BACK        = VK_BACK,
+        TAB         = VK_TAB,
+        SPACE       = VK_SPACE,
+        LEFT        = VK_LEFT,
+        UP          = VK_UP,
+        RIGHT       = VK_RIGHT,
+        DOWN        = VK_DOWN,
+        RETURN      = VK_RETURN,
+        ALTTAB      = 0x100,
     };
-
 
     TokenKeys(const TokenType_E& inToken)
     : KeyCommandInterface(),
@@ -174,6 +170,9 @@ public:
         }
     }
 
+    //  Original implementation borrowed from:
+    //  https://sites.google.com/site/jozsefbekes/Home/windows-programming/keyboard-and-mouse-simulations
+    //
     void SimulateKeyPress(const char& key, bool bAlt = false, bool bShift = false,
                           bool bCtrl = false, bool bWin = false, bool bRealKeyCode = false)
     {

@@ -1,6 +1,10 @@
 #ifndef CSVDATAPARSER_HPP
 #define CSVDATAPARSER_HPP
 
+/*
+ *  Credit for parser goes to "sastanin" in http://stackoverflow.com/questions/1120140/how-can-i-read-and-parse-csv-files-in-c
+*/
+
 #include <map>
 #include <vector>
 #include <string>
@@ -10,7 +14,6 @@
 
 namespace Utils {
 
-// Credit for parser goes to "sastanin" in http://stackoverflow.com/questions/1120140/how-can-i-read-and-parse-csv-files-in-c
 class CsvData {
 public:
     typedef std::map<int, std::vector<std::string> > DataMapType;

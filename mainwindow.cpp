@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <TCHAR.H>
 
+#include <locale>         // std::locale, std::toupper
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -72,8 +74,8 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
             while(QListWidgetItem* item = ui->listWidget->takeItem(0)) { delete item; }
 
             // Setup new data table size
-            ui->tableWidget->setRowCount(data.size());
-            ui->tableWidget->setColumnCount(headers.size());
+            ui->tableWidget->setRowCount(static_cast<int>(data.size()));
+            ui->tableWidget->setColumnCount(static_cast<int>(headers.size()));
 
             // Fill data table
             for(int column=0; column<headers.size(); column++)
@@ -146,11 +148,17 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
 
     std::vector<std::unique_ptr<KeyCommandInterface>> keySequence;
 
-    if (mSelectedRow==-1 || mCsvData.isEmpty())
+    if (mCsvData.isEmpty())
     {
         std::cout << "No data loaded. Doing nothing." << std::endl;
         return;
     }
+    else if (mSelectedRow==-1)
+    {
+        std::cout << "No data selected. Doing nothing." << std::endl;
+        return;
+    }
+
     std::vector<std::string> headers = mCsvData.getHeaders();
     std::vector<std::string> dataToSend = mCsvData.getData().at(mSelectedRow);
 
@@ -204,7 +212,6 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
                     tokenText.push_back(c);
                 }
             break;
-
         }
 
         if (state == TokenState::CloseToken)
@@ -222,7 +229,9 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
                 // could not convert to number, assume key-code
                 try
                 {
-                    keySequence.emplace_back(new TokenKeys(tokenText));
+                    std::string s = tokenText;
+                    transform(s.begin(), s.end(), s.begin(), toupper);
+                    keySequence.emplace_back(new TokenKeys(s));
                 }
                 catch (std::invalid_argument)
                 {
