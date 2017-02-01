@@ -34,7 +34,7 @@ public:
             fb.close();
 
             mHeaders = data[0];
-            for (int n=1; n<data.size(); n++)
+            for (size_t n=1; n<data.size(); n++)
             {
                 mRowDataMap[n-1] = data[n];
             }

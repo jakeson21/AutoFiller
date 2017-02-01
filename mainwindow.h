@@ -5,6 +5,11 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QListWidgetItem>
+#include <QSysInfo>
+
+#ifdef Q_OS_WIN
+#include <TCHAR.H>
+#endif
 
 #include <map>
 #include <vector>

@@ -5,11 +5,15 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <QSysInfo>
 
 #ifdef Q_OS_WIN
 #define WINVER 0x0500
 #include "Windows.h"
 #include "WinUser.h"
+#endif
+#ifdef Q_OS_LINUX
+#include <QProcess>
 #endif
 
 // Common interface for classes StringKeys and TokenKeys
@@ -19,6 +23,7 @@ public:
     virtual void SendKeys() = 0;
 };
 
+#ifdef Q_OS_WIN
 class StringKeys : public KeyCommandInterface
 {
 public:
@@ -270,5 +275,98 @@ public:
     std::map<int, std::string> mStrMap;
     TokenType_E mToken;
 };
+#endif // Q_OS_WIN
+
+#ifdef Q_OS_LINUX
+
+class StringKeys : public KeyCommandInterface
+{
+public:
+    StringKeys(const std::string& inString)
+    : KeyCommandInterface(),
+      mStr()
+    {
+        mStr.assign(inString.begin(), inString.end());
+    }
+
+    virtual ~StringKeys() {}
+
+    void SendKeys()
+    {
+        system("xdotool getactivewindow type 'Test String ~!@#$%^&*()_+`1234567890-='");
+    }
+private:
+    std::string mStr;
+};
+
+class TokenKeys : public KeyCommandInterface
+{
+public:
+    enum TokenType_E {
+        UNASSIGNED  = -1,
+        BACK        = 0,
+        TAB,
+        SPACE,
+        LEFT,
+        UP,
+        RIGHT,
+        DOWN,
+        RETURN,
+        ALTTAB,
+        CTRL,
+    };
+
+    TokenKeys(const TokenType_E& inToken)
+    : KeyCommandInterface(),
+      mToken(inToken)
+    {
+        initialize();
+    }
+
+    TokenKeys(const std::string& inToken)
+    : KeyCommandInterface(),
+      mToken()
+    {
+        initialize();
+
+        mToken = TokenType_E::UNASSIGNED;
+        for(std::map<int, std::string>::iterator it = mStrMap.begin(); it != mStrMap.end(); ++it) {
+              if (inToken.compare(it->second) == 0)
+              {
+                  mToken = static_cast<TokenType_E>(it->first);
+                  break;
+              }
+        }
+        if (mToken == TokenType_E::UNASSIGNED)
+            throw std::invalid_argument("Unrecognized Enum");
+    }
+
+    void initialize()
+    {
+        mStrMap[BACK]   = "BackSpace";
+        mStrMap[TAB]    = "TAB";
+        mStrMap[SPACE]  = "SPACE";
+        mStrMap[LEFT]   = "LEFT";
+        mStrMap[UP]     = "UP";
+        mStrMap[RIGHT]  = "RIGHT";
+        mStrMap[DOWN]   = "DOWN";
+        mStrMap[RETURN] = "Return";
+        mStrMap[ALTTAB] = "alt+tab";
+        mStrMap[CTRL]   = "Control_";
+    }
+
+    virtual ~TokenKeys() {}
+
+    void SendKeys()
+    {
+        system("xdotool getactivewindow key A");
+    }
+
+    std::map<int, std::string> mStrMap;
+    TokenType_E mToken;
+};
+
+
+#endif // Q_OS_LINUX
 
 #endif // KEYSEQUENCER_HPP

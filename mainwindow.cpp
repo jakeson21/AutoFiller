@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <TCHAR.H>
 
 #include <locale>         // std::locale, std::toupper
 
@@ -22,6 +21,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+#ifdef Q_OS_WIN
 bool MainWindow::switchToLastActiveWindow()
 {
     HWND handle = GetForegroundWindow(); // Handle of this window
@@ -47,6 +47,39 @@ bool MainWindow::switchToLastActiveWindow()
     std::cout << "Set nextWindow to foreground" << std::endl;
     return true;
 }
+#endif
+
+#ifdef Q_OS_LINUX
+bool MainWindow::switchToLastActiveWindow()
+{
+    /*HWND handle = GetForegroundWindow(); // Handle of this window
+    std::cout << "Foreground window = " << handle << std::endl;
+
+    // Get handle of last active window: the window we want to send keystrokes to
+    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
+
+    // Move to its true parent handle
+    while (true)
+    {
+        HWND temp = GetParent(nextWindow);
+        if (temp == NULL) break;
+        nextWindow = temp;
+    }
+    std::cout << "nextWindow = " << nextWindow << std::endl;
+
+    if( !SetForegroundWindow( nextWindow ) )
+    {
+        std::cout << "Could not nextWindow to foreground" << std::endl;
+        return false;
+    }
+    std::cout << "Set nextWindow to foreground" << std::endl;
+*/
+    std::cout << "Set nextWindow to foreground" << std::endl;
+    system("xdotool getactivewindow windowminimize");
+
+    return true;
+}
+#endif
 
 void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
 {
@@ -78,7 +111,7 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
             ui->tableWidget->setColumnCount(static_cast<int>(headers.size()));
 
             // Fill data table
-            for(int column=0; column<headers.size(); column++)
+            for(size_t column=0; column<headers.size(); column++)
             {
                 QTableWidgetItem* newItem = new QTableWidgetItem();
                 newItem->setText(QString::fromStdString(headers[column]));
@@ -91,9 +124,9 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
             }
             connect(ui->listWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::handleListItemDoubleClicked);
 
-            for(int row=0; row<data.size(); row++)
+            for(size_t row=0; row<data.size(); row++)
             {
-                for(int column=0; column<headers.size(); column++)
+                for(size_t column=0; column<headers.size(); column++)
                 {
                     QTableWidgetItem* newItem = new QTableWidgetItem();
                     newItem->setText(QString::fromStdString(data[row][column]));
@@ -248,7 +281,7 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
     // Send to previously active window
     switchToLastActiveWindow();
 
-    for (int n=0; n<keySequence.size(); n++)
+    for (size_t n=0; n<keySequence.size(); n++)
     {
         keySequence[n]->SendKeys();
     }
