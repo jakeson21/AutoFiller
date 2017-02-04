@@ -7,7 +7,7 @@
 
 namespace OS {
 
-enum TokenType_E {
+enum SpecialKeyType_E {
     UNASSIGNED  = -1,
     BACK        = 0,
     TAB,
@@ -35,52 +35,52 @@ public:
 
     virtual void initialize()
     {
-        mTokenStrMap[UNASSIGNED]    = "UNASSIGNED";
-        mTokenStrMap[BACK]          = "BACK";
-        mTokenStrMap[TAB]           = "TAB";
-        mTokenStrMap[SPACE]         = "SPACE";
-        mTokenStrMap[LEFT]          = "LEFT";
-        mTokenStrMap[UP]            = "UP";
-        mTokenStrMap[RIGHT]         = "RIGHT";
-        mTokenStrMap[DOWN]          = "DOWN";
-        mTokenStrMap[RETURN]        = "RETURN";
-        mTokenStrMap[ALT]           = "TAB";
-        mTokenStrMap[ALTTAB]        = "ALTTAB";
-        mTokenStrMap[CTRL]          = "CTRL";
+        mSpecialKeyStrMap[UNASSIGNED]    = "UNASSIGNED";
+        mSpecialKeyStrMap[BACK]          = "BACK";
+        mSpecialKeyStrMap[TAB]           = "TAB";
+        mSpecialKeyStrMap[SPACE]         = "SPACE";
+        mSpecialKeyStrMap[LEFT]          = "LEFT";
+        mSpecialKeyStrMap[UP]            = "UP";
+        mSpecialKeyStrMap[RIGHT]         = "RIGHT";
+        mSpecialKeyStrMap[DOWN]          = "DOWN";
+        mSpecialKeyStrMap[RETURN]        = "RETURN";
+        mSpecialKeyStrMap[ALT]           = "TAB";
+        mSpecialKeyStrMap[ALTTAB]        = "ALTTAB";
+        mSpecialKeyStrMap[CTRL]          = "CTRL";
     }
 
-    std::string tokenToString(TokenType_E inToken) const
+    std::string specialKeyToString(SpecialKeyType_E inSpecialKey) const
     {
-        auto it = mTokenStrMap.find(inToken);
-        if (it != mTokenStrMap.end())
-            return mTokenStrMap.at(inToken);
+        auto it = mSpecialKeyStrMap.find(inSpecialKey);
+        if (it != mSpecialKeyStrMap.end())
+            return mSpecialKeyStrMap.at(inSpecialKey);
         else
-            return mTokenStrMap.at(UNASSIGNED);
+            return mSpecialKeyStrMap.at(UNASSIGNED);
     }
 
-    int tokenToInt(const std::string& inToken)
+    int specialKeyToInt(const std::string& inSpecialKey)
     {
-        int mToken = TokenType_E::UNASSIGNED;
-        for(std::map<int, std::string>::iterator it = mTokenStrMap.begin(); it != mTokenStrMap.end(); ++it) {
-              if (inToken.compare(it->second) == 0)
+        int mSpecialKey = SpecialKeyType_E::UNASSIGNED;
+        for(std::map<int, std::string>::iterator it = mSpecialKeyStrMap.begin(); it != mSpecialKeyStrMap.end(); ++it) {
+              if (inSpecialKey.compare(it->second) == 0)
               {
-                  mToken = static_cast<TokenType_E>(it->first);
+                  mSpecialKey = static_cast<SpecialKeyType_E>(it->first);
                   break;
               }
         }
-        if (mToken == TokenType_E::UNASSIGNED)
+        if (mSpecialKey == SpecialKeyType_E::UNASSIGNED)
             throw std::invalid_argument("Unrecognized Enum");
 
-        return static_cast<int>(mToken);
+        return static_cast<int>(mSpecialKey);
     }
 
     virtual bool SwitchToPreviousWindow() = 0;
     virtual void SendKeys() = 0;
     virtual void AddStringToQueue(const std::string& inString) = 0;
-    virtual void AddTokenToQueue(int inToken) = 0;
+    virtual void AddSpecialKeyToQueue(int inSpecialKey) = 0;
 
 protected:
-    std::map<int, std::string> mTokenStrMap;
+    std::map<int, std::string> mSpecialKeyStrMap;
 };
 
 }

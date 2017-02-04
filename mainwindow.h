@@ -28,8 +28,6 @@
 #include <csvdataparser.hpp>
 using namespace Utils;
 
-//#include <keysequencer.hpp>
-
 namespace Ui {
 class MainWindow;
 }

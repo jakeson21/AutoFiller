@@ -32,34 +32,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//#ifdef Q_OS_WIN
-//bool MainWindow::switchToLastActiveWindow()
-//{
-//    HWND handle = GetForegroundWindow(); // Handle of this window
-//    std::cout << "Foreground window = " << handle << std::endl;
-
-//    // Get handle of last active window: the window we want to send keystrokes to
-//    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
-
-//    // Move to its true parent handle
-//    while (true)
-//    {
-//        HWND temp = GetParent(nextWindow);
-//        if (temp == NULL) break;
-//        nextWindow = temp;
-//    }
-//    std::cout << "nextWindow = " << nextWindow << std::endl;
-
-//    if( !SetForegroundWindow( nextWindow ) )
-//    {
-//        std::cout << "Could not nextWindow to foreground" << std::endl;
-//        return false;
-//    }
-//    std::cout << "Set nextWindow to foreground" << std::endl;
-//    return true;
-//}
-//#endif
-
 //#ifdef Q_OS_LINUX
 //bool MainWindow::switchToLastActiveWindow()
 //{
@@ -186,13 +158,9 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
 {
     QString tokens = ui->lineEditKeySequence->text();
 
-    //mKeyInput->SwitchToPreviousWindow();
-
     // Parse key sequence into tokens
     std::string tokenText;
     TokenState state = TokenState::OpenToken;
-
-    //std::vector<std::unique_ptr<KeyCommandInterface>> keySequence;
 
     if (mCsvData.isEmpty())
     {
@@ -268,7 +236,6 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
             try
             {
                 int col = std::stoi(tokenText);
-                //keySequence.emplace_back(new StringKeys(dataToSend[col]));
                 mKeyInput->AddStringToQueue(dataToSend[col]);
             }
             catch (std::invalid_argument)
@@ -278,8 +245,7 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
                 {
                     std::string s = tokenText;
                     transform(s.begin(), s.end(), s.begin(), toupper);
-                    //keySequence.emplace_back(new TokenKeys(s));
-                    mKeyInput->AddTokenToQueue(mKeyInput->tokenToInt(s));
+                    mKeyInput->AddSpecialKeyToQueue(mKeyInput->specialKeyToInt(s));
                 }
                 catch (std::invalid_argument)
                 {

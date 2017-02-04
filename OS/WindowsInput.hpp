@@ -92,46 +92,46 @@ public:
         }
     }
 
-    virtual void AddTokenToQueue(int inToken)
+    virtual void AddSpecialKeyToQueue(int inSpecialKey)
     {
         int key = 0;
-        switch (inToken)
+        switch (inSpecialKey)
         {
-        case TokenType_E::BACK:
+        case SpecialKeyType_E::BACK:
             key = VK_BACK;
             break;
-        case TokenType_E::TAB:
+        case SpecialKeyType_E::TAB:
             key = VK_TAB;
             break;
-        case TokenType_E::SPACE:
+        case SpecialKeyType_E::SPACE:
             key = VK_SPACE;
             break;
-        case TokenType_E::LEFT:
+        case SpecialKeyType_E::LEFT:
             key = VK_LEFT;
             break;
-        case TokenType_E::UP:
+        case SpecialKeyType_E::UP:
             key = VK_UP;
             break;
-        case TokenType_E::RIGHT:
+        case SpecialKeyType_E::RIGHT:
             key = VK_RIGHT;
             break;
-        case TokenType_E::DOWN:
+        case SpecialKeyType_E::DOWN:
             key = VK_DOWN;
             break;
-        case TokenType_E::RETURN:
+        case SpecialKeyType_E::RETURN:
             key = VK_RETURN;
             break;
-        case TokenType_E::ALT:
+        case SpecialKeyType_E::ALT:
             key = VK_MENU;
             SimulateKeyPress(static_cast<char>(key), true);
             return;
             break;
-        case TokenType_E::ALTTAB:
+        case SpecialKeyType_E::ALTTAB:
             key = VK_TAB;
             SimulateKeyPress(static_cast<char>(key), true);
             return;
             break;
-        case TokenType_E::CTRL:
+        case SpecialKeyType_E::CTRL:
             key = VK_CONTROL;
             SimulateKeyPress(static_cast<char>(key), false, false, true);
             return;
@@ -150,8 +150,6 @@ public:
     void SimulateKeyPress(const char& key, bool bAlt = false, bool bShift = false,
                           bool bCtrl = false, bool bWin = false, bool bRealKeyCode = false)
     {
-        //int intReturn = -1;
-
         INPUT input;
         input.type = INPUT_KEYBOARD;
 
@@ -202,7 +200,6 @@ public:
             input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY|KEYEVENTF_KEYUP;
             input.ki.wVk = VK_SHIFT;
             mKeyStrokes.emplace_back(input);
-            //SendInput(1, &input, sizeof(INPUT));
             input.ki.dwFlags = KEYEVENTF_KEYUP;
         }
         if (bCtrl)
