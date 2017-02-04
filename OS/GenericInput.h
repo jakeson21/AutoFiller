@@ -18,6 +18,7 @@ enum TokenType_E {
     DOWN,
     RETURN,
     ALT,
+    ALTTAB,
     CTRL,
 };
 
@@ -44,31 +45,42 @@ public:
         mTokenStrMap[DOWN]          = "DOWN";
         mTokenStrMap[RETURN]        = "RETURN";
         mTokenStrMap[ALT]           = "TAB";
+        mTokenStrMap[ALTTAB]        = "ALTTAB";
         mTokenStrMap[CTRL]          = "CTRL";
     }
 
     std::string tokenToString(TokenType_E inToken) const
     {
         auto it = mTokenStrMap.find(inToken);
-        if (it != my_map.end())
+        if (it != mTokenStrMap.end())
             return mTokenStrMap.at(inToken);
         else
-            return mTokenStrMap[UNASSIGNED];
+            return mTokenStrMap.at(UNASSIGNED);
     }
 
-    int tokenToInt(const std::string& inToken) const
+    int tokenToInt(const std::string& inToken)
     {
+        int mToken = TokenType_E::UNASSIGNED;
+        for(std::map<int, std::string>::iterator it = mTokenStrMap.begin(); it != mTokenStrMap.end(); ++it) {
+              if (inToken.compare(it->second) == 0)
+              {
+                  mToken = static_cast<TokenType_E>(it->first);
+                  break;
+              }
+        }
+        if (mToken == TokenType_E::UNASSIGNED)
+            throw std::invalid_argument("Unrecognized Enum");
+
         return static_cast<int>(mToken);
     }
 
     virtual bool SwitchToPreviousWindow() = 0;
     virtual void SendKeys() = 0;
     virtual void AddStringToQueue(const std::string& inString) = 0;
-    virtual void AddTokenToQueue(TokenType_E inToken) = 0;
-    virtual void ClearKeys() = 0;
+    virtual void AddTokenToQueue(int inToken) = 0;
 
 protected:
-    std::map<TokenType_E, std::string> mTokenStrMap;
+    std::map<int, std::string> mTokenStrMap;
 };
 
 }

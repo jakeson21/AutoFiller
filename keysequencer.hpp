@@ -8,7 +8,6 @@
 #include <QSysInfo>
 
 #ifdef Q_OS_WIN
-#define WINVER 0x0500
 #include "Windows.h"
 #include "WinUser.h"
 #endif

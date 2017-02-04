@@ -14,6 +14,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::handleMenuOpen);
     QObject::connect(ui->actionClose, &QAction::triggered, this, &MainWindow::handleMenuClose);
     QObject::connect(ui->tableWidget, &QTableWidget::cellClicked, this, &MainWindow::handleCellClicked);
+
+#ifdef Q_OS_WIN
+    OS::WindowsInput* input = new OS::WindowsInput;
+    mKeyInput.reset(input);
+#endif
+
+#ifdef Q_OS_LINUX
+    OS::LinuxInput* input = new OS::WindowsInput;
+    mKeyInput.reset(input);
+#endif
+
 }
 
 MainWindow::~MainWindow()
@@ -21,65 +32,65 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-#ifdef Q_OS_WIN
-bool MainWindow::switchToLastActiveWindow()
-{
-    HWND handle = GetForegroundWindow(); // Handle of this window
-    std::cout << "Foreground window = " << handle << std::endl;
+//#ifdef Q_OS_WIN
+//bool MainWindow::switchToLastActiveWindow()
+//{
+//    HWND handle = GetForegroundWindow(); // Handle of this window
+//    std::cout << "Foreground window = " << handle << std::endl;
 
-    // Get handle of last active window: the window we want to send keystrokes to
-    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
+//    // Get handle of last active window: the window we want to send keystrokes to
+//    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
 
-    // Move to its true parent handle
-    while (true)
-    {
-        HWND temp = GetParent(nextWindow);
-        if (temp == NULL) break;
-        nextWindow = temp;
-    }
-    std::cout << "nextWindow = " << nextWindow << std::endl;
+//    // Move to its true parent handle
+//    while (true)
+//    {
+//        HWND temp = GetParent(nextWindow);
+//        if (temp == NULL) break;
+//        nextWindow = temp;
+//    }
+//    std::cout << "nextWindow = " << nextWindow << std::endl;
 
-    if( !SetForegroundWindow( nextWindow ) )
-    {
-        std::cout << "Could not nextWindow to foreground" << std::endl;
-        return false;
-    }
-    std::cout << "Set nextWindow to foreground" << std::endl;
-    return true;
-}
-#endif
+//    if( !SetForegroundWindow( nextWindow ) )
+//    {
+//        std::cout << "Could not nextWindow to foreground" << std::endl;
+//        return false;
+//    }
+//    std::cout << "Set nextWindow to foreground" << std::endl;
+//    return true;
+//}
+//#endif
 
-#ifdef Q_OS_LINUX
-bool MainWindow::switchToLastActiveWindow()
-{
-    /*HWND handle = GetForegroundWindow(); // Handle of this window
-    std::cout << "Foreground window = " << handle << std::endl;
+//#ifdef Q_OS_LINUX
+//bool MainWindow::switchToLastActiveWindow()
+//{
+//    /*HWND handle = GetForegroundWindow(); // Handle of this window
+//    std::cout << "Foreground window = " << handle << std::endl;
 
-    // Get handle of last active window: the window we want to send keystrokes to
-    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
+//    // Get handle of last active window: the window we want to send keystrokes to
+//    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
 
-    // Move to its true parent handle
-    while (true)
-    {
-        HWND temp = GetParent(nextWindow);
-        if (temp == NULL) break;
-        nextWindow = temp;
-    }
-    std::cout << "nextWindow = " << nextWindow << std::endl;
+//    // Move to its true parent handle
+//    while (true)
+//    {
+//        HWND temp = GetParent(nextWindow);
+//        if (temp == NULL) break;
+//        nextWindow = temp;
+//    }
+//    std::cout << "nextWindow = " << nextWindow << std::endl;
 
-    if( !SetForegroundWindow( nextWindow ) )
-    {
-        std::cout << "Could not nextWindow to foreground" << std::endl;
-        return false;
-    }
-    std::cout << "Set nextWindow to foreground" << std::endl;
-*/
-    std::cout << "Set nextWindow to foreground" << std::endl;
-    system("xdotool getactivewindow windowminimize");
+//    if( !SetForegroundWindow( nextWindow ) )
+//    {
+//        std::cout << "Could not nextWindow to foreground" << std::endl;
+//        return false;
+//    }
+//    std::cout << "Set nextWindow to foreground" << std::endl;
+//*/
+//    std::cout << "Set nextWindow to foreground" << std::endl;
+//    system("xdotool getactivewindow windowminimize");
 
-    return true;
-}
-#endif
+//    return true;
+//}
+//#endif
 
 void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
 {
@@ -175,11 +186,13 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
 {
     QString tokens = ui->lineEditKeySequence->text();
 
+    //mKeyInput->SwitchToPreviousWindow();
+
     // Parse key sequence into tokens
     std::string tokenText;
     TokenState state = TokenState::OpenToken;
 
-    std::vector<std::unique_ptr<KeyCommandInterface>> keySequence;
+    //std::vector<std::unique_ptr<KeyCommandInterface>> keySequence;
 
     if (mCsvData.isEmpty())
     {
@@ -250,12 +263,13 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
         if (state == TokenState::CloseToken)
         {
             // do something with token text
-            std::cout << "Got token: " << tokenText << std::endl;
+            std::cout << "Got token:[" << tokenText << "]" << std::endl;
 
             try
             {
                 int col = std::stoi(tokenText);
-                keySequence.emplace_back(new StringKeys(dataToSend[col]));
+                //keySequence.emplace_back(new StringKeys(dataToSend[col]));
+                mKeyInput->AddStringToQueue(dataToSend[col]);
             }
             catch (std::invalid_argument)
             {
@@ -264,7 +278,8 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
                 {
                     std::string s = tokenText;
                     transform(s.begin(), s.end(), s.begin(), toupper);
-                    keySequence.emplace_back(new TokenKeys(s));
+                    //keySequence.emplace_back(new TokenKeys(s));
+                    mKeyInput->AddTokenToQueue(mKeyInput->tokenToInt(s));
                 }
                 catch (std::invalid_argument)
                 {
@@ -275,16 +290,11 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
         }
     }
 
-    std::cout << "Key Sequence size = " << keySequence.size() << std::endl;
-    if (keySequence.size() == 0) { return; }
-
     // Send to previously active window
-    switchToLastActiveWindow();
+    mKeyInput->SwitchToPreviousWindow();
+    mKeyInput->SendKeys();
 
-    for (size_t n=0; n<keySequence.size(); n++)
-    {
-        keySequence[n]->SendKeys();
-    }
+
 }
 
 

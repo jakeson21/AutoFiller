@@ -7,8 +7,12 @@
 #include <QListWidgetItem>
 #include <QSysInfo>
 
+#include <OS/GenericInput.h>
 #ifdef Q_OS_WIN
-#include <TCHAR.H>
+#include <OS/WindowsInput.hpp>
+#endif
+#ifdef Q_OS_LINUX
+#include <OS/LinuxInput.hpp>
 #endif
 
 #include <map>
@@ -24,7 +28,7 @@
 #include <csvdataparser.hpp>
 using namespace Utils;
 
-#include <keysequencer.hpp>
+//#include <keysequencer.hpp>
 
 namespace Ui {
 class MainWindow;
@@ -62,8 +66,7 @@ private:
     CsvData mCsvData;
     int mSelectedRow;
 
-    //KeyStrokes keys;
-
+    std::unique_ptr<OS::GenericInput> mKeyInput;
 };
 
 #endif // MAINWINDOW_H
