@@ -22,21 +22,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 @TARGET = target
-unix {
-message(Building for Linux)
-}
-win32 {
-message(Building for Windows)
-LIBS    += -luser32
-}
-
 
 SOURCES += main.cpp\
         mainwindow.cpp
 
 HEADERS += mainwindow.h \
     csvdataparser.hpp \
-    keysequencer.hpp
+    keysequencer.hpp \
+    OS/GenericInput.h
+
+unix {
+message(Building for Linux)
+HEADERS += OS/LinuxInput.hpp
+}
+win32 {
+message(Building for Windows)
+HEADERS += OS/WindowsInput.hpp
+LIBS    += -luser32
+}
 
 FORMS   += mainwindow.ui
 
