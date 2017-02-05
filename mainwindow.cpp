@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
 #ifdef Q_OS_LINUX
-    OS::LinuxInput* input = new OS::WindowsInput;
+    OS::LinuxInput* input = new OS::LinuxInput;
     mKeyInput.reset(input);
 #endif
 
@@ -31,38 +31,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-//#ifdef Q_OS_LINUX
-//bool MainWindow::switchToLastActiveWindow()
-//{
-//    /*HWND handle = GetForegroundWindow(); // Handle of this window
-//    std::cout << "Foreground window = " << handle << std::endl;
-
-//    // Get handle of last active window: the window we want to send keystrokes to
-//    HWND nextWindow = GetNextWindow( handle, GW_HWNDNEXT);
-
-//    // Move to its true parent handle
-//    while (true)
-//    {
-//        HWND temp = GetParent(nextWindow);
-//        if (temp == NULL) break;
-//        nextWindow = temp;
-//    }
-//    std::cout << "nextWindow = " << nextWindow << std::endl;
-
-//    if( !SetForegroundWindow( nextWindow ) )
-//    {
-//        std::cout << "Could not nextWindow to foreground" << std::endl;
-//        return false;
-//    }
-//    std::cout << "Set nextWindow to foreground" << std::endl;
-//*/
-//    std::cout << "Set nextWindow to foreground" << std::endl;
-//    system("xdotool getactivewindow windowminimize");
-
-//    return true;
-//}
-//#endif
 
 void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
 {

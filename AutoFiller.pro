@@ -28,7 +28,6 @@ SOURCES += main.cpp\
 
 HEADERS += mainwindow.h \
     csvdataparser.hpp \
-    keysequencer.hpp \
     OS/GenericInput.h
 
 unix {

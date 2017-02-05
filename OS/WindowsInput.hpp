@@ -3,6 +3,7 @@
 
 #include "Windows.h"
 #include "WinUser.h"
+#include <OS/GenericInput.h>
 #include <iostream>
 #include <string>
 #include <vector>
