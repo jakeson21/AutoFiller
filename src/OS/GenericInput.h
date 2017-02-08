@@ -49,7 +49,7 @@ public:
         mSpecialKeyStrMap[CTRL]          = "CTRL";
     }
 
-    std::string specialKeyToString(SpecialKeyType_E inSpecialKey) const
+    std::string specialKeyToString(const SpecialKeyType_E& inSpecialKey) const
     {
         auto it = mSpecialKeyStrMap.find(inSpecialKey);
         if (it != mSpecialKeyStrMap.end())
@@ -78,6 +78,7 @@ public:
     virtual void SendKeys() = 0;
     virtual void AddStringToQueue(const std::string& inString) = 0;
     virtual void AddSpecialKeyToQueue(int inSpecialKey) = 0;
+    virtual bool isEmpty() = 0;
 
 protected:
     std::map<int, std::string> mSpecialKeyStrMap;

@@ -91,7 +91,7 @@ void MainWindow::handleMenuOpen(bool /*inIsChecked*/)
 void MainWindow::handleListItemDoubleClicked(QListWidgetItem* inItem)
 {
     int index = ui->listWidget->row(inItem);
-    std::cout << "Selected index " << index << std::endl;
+    std::cout << "Selected column " << index << std::endl;
     ui->lineEditKeySequence->insert(QString("[%1]").arg(index));
 }
 
@@ -140,6 +140,8 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
         std::cout << "No data selected. Doing nothing." << std::endl;
         return;
     }
+
+    std::cout << "Selected row " << mSelectedRow << std::endl;
 
     std::vector<std::string> headers = mCsvData.getHeaders();
     std::vector<std::string> dataToSend = mCsvData.getData().at(mSelectedRow);
@@ -224,11 +226,16 @@ void MainWindow::on_buttonSendInfo_clicked(bool /*inState*/)
         }
     }
 
-    // Send to previously active window
-    mKeyInput->SwitchToPreviousWindow();
-    mKeyInput->SendKeys();
-
-
+    if (!mKeyInput->isEmpty())
+    {
+        // Send to previously active window
+        mKeyInput->SwitchToPreviousWindow();
+        mKeyInput->SendKeys();
+    }
+    else
+    {
+        std::cout << "WARNING: Command string not set. Doing nothing." << std::endl;
+    }
 }
 
 

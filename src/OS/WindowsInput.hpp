@@ -216,6 +216,12 @@ public:
         }
     }
 
+    virtual bool isEmpty()
+    {
+        return mKeyStrokes.empty();
+    }
+
+
 protected:
     std::vector<INPUT> mKeyStrokes;
 };

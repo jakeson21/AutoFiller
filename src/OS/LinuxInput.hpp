@@ -28,7 +28,7 @@ public:
 
     virtual bool SwitchToPreviousWindow()
     {
-        std::cout << "Set nextWindow to foreground" << std::endl;
+        std::cout << "Setting previous window to foreground" << std::endl;
         int ret = system("xdotool getactivewindow windowminimize && sleep 0.2");
         return (ret != -1);
     }
@@ -37,21 +37,25 @@ public:
     {
         for (size_t n = 0; n < mKeyStrokes.size(); n++)
         {
+            int retVal;
+            std::stringstream ss;
             if (mKeyStrokes[n].first == SPECIALKEY)
             {
-                std::cout << "Sending: " <<mKeyStrokes[n].second << std::endl;
-                std::stringstream ss;
+                std::cout << "Sending: " << mKeyStrokes[n].second << std::endl;
                 ss << "xdotool getactivewindow key " << mKeyStrokes[n].second;
-                system(ss.str().c_str());
+                retVal = system(ss.str().c_str());
             }
             else
             {
-                std::cout << "Sending: " <<mKeyStrokes[n].second << std::endl;
-                std::stringstream ss;
+                std::cout << "Sending: " << mKeyStrokes[n].second << std::endl;
                 ss << "xdotool getactivewindow type " << mKeyStrokes[n].second;
-                system(ss.str().c_str());
+                retVal = system(ss.str().c_str());
             }
-        }
+            if (retVal < 0)
+            {
+                std::cout << "ERROR: Could not execute " << ss.str() << std::endl;
+            }
+        }        
         mKeyStrokes.clear();
     }
 
@@ -104,6 +108,11 @@ public:
         }
 
         mKeyStrokes.emplace_back(KeyStrokeEntry(SPECIALKEY, key));
+    }
+
+    virtual bool isEmpty()
+    {
+        return mKeyStrokes.empty();
     }
 
 protected:
